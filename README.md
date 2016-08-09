@@ -10,28 +10,18 @@ App: OpenLDAP-2.4.44
 Bug ID: 8385(UAF)
 Status: 
 
+App: BC
+Bug ID:(HO)
+Status: Compiled and Working. Throws errors which are detected by Sampler. We took the Stack Overflow out before compiling. See the TAR Ball in this repository.
 
-1. BC - Compiled and Working. Throws errors which are detected by Sampler. We took the Stack Overflow out before compiling. See the TAR Ball in this repository.
+App: Squid
+Bug ID: (HO)
+Status: Works properly when compiled normally. "squid" executable runs very slowly after adding sampler's linking flags to the makefile.
 
-2. Squid - Works properly when compiled normally. "squid" executable hangs when running after adding sampler's linking flags to the makefile.
+App: CVS
+Bug ID: (DF)
+Status: compiles properly, now attempting to start server and reproduce use after free bug.
 
-3. CVS - Fails to compile normally. Here is the error message:
---------------------------------------------------------------------------------------
-gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../src     -g -O2 -c `test -f 'getline.c' || echo './'`getline.c
-In file included from getline.c:25:0:
-getline.h:15:3: error: conflicting types for ‘getline’
-   getline __PROTO ((char **_lineptr, size_t *_n, FILE *_stream));
-   ^
-In file included from getline.c:22:0:
-/usr/include/stdio.h:678:20: note: previous declaration of ‘getline’ was here
- extern _IO_ssize_t getline (char **__restrict __lineptr,
-                    ^
-getline.c:158:1: error: conflicting types for ‘getline’
- getline (lineptr, n, stream)
- ^
-In file included from getline.c:22:0:
-/usr/include/stdio.h:678:20: note: previous declaration of ‘getline’ was here
- extern _IO_ssize_t getline (char **__restrict __lineptr,
-                    ^
-Makefile:265: recipe for target 'getline.o' failed
---------------------------------------------------------------------------------------
+App: OPENSSL
+Bug ID: HeartBleed (HO)
+Status: OPENSSL may use it's own internal memory manager with openssl_malloc(). Investigating whether or not sampler can detect this overflow.
