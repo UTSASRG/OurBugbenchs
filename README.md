@@ -1,9 +1,9 @@
-Looking for the Following Errors in BUGBENCH: Heap Overflow, Use after Free, Free not allowed, double free
+Looking for the Following Errors in BUGBENCH: Heap Overflow (HO), Use after Free (UAF), Free Not Allowed (FNA), double free (DF)
 
 NOTE:
 
 App: MySQL-5.7.9
-Bug ID: 79402(UAF) 78995(UAF)
+Bug ID: 79402(UAF) 78995(UAF) 78965(HO) 79648(HO)
 Status: Reproducing
 
 App: OpenLDAP-2.4.44
