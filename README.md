@@ -1,5 +1,12 @@
 Looking for the Following Errors in BUGBENCH: Heap Overflow, Use after Free, Free not allowed, double free
 
+NOTE:
+
+Apps				version				Bug Id								Problem						Status
+
+MySQL				5.7.9  				79402, 78995  				UAF								in reproducing
+
+
 1. BC - Compiled and Working. Throws errors which are detected by Sampler. We took the Stack Overflow out before compiling. See the TAR Ball in this repository.
 
 2. Squid - Works properly when compiled normally. "squid" executable hangs when running after adding sampler's linking flags to the makefile.
