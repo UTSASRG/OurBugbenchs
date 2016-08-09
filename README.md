@@ -20,7 +20,7 @@ Status: Works properly when compiled normally. "squid" executable runs very slow
 
 App: CVS
 Bug ID: (DF)
-Status: compiles properly, now attempting to start server and reproduce use after free bug.
+Status: compiles properly, now attempting to start server and reproduce bug.
 
 App: OPENSSL
 Bug ID: HeartBleed (HO)
