@@ -2,9 +2,13 @@ Looking for the Following Errors in BUGBENCH: Heap Overflow, Use after Free, Fre
 
 NOTE:
 
-Apps				version				Bug Id								Problem						Status
+App: MySQL-5.7.9
+Bug ID: 79402(UAF) 78995(UAF)
+Status: Reproducing
 
-MySQL				5.7.9  				79402, 78995  				UAF								in reproducing
+App: OpenLDAP-2.4.44
+Bug ID: 8385(UAF)
+Status: 
 
 
 1. BC - Compiled and Working. Throws errors which are detected by Sampler. We took the Stack Overflow out before compiling. See the TAR Ball in this repository.
