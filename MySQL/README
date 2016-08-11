@@ -1,0 +1,46 @@
+MySQL-5.7.9
+
+	How to link: add "SET(CMAKE_THREAD_LIBS_INIT "-rdynamic /home/zjp/projects/Sampler/source/libsampler.so" ${CMAKE_THREAD_LIBS_INIT})" in configure.cmake line 317
+
+	Bug 79402 UAF: Reproduced
+		install.sh: cmake -DWITH_DEBUG=ON -DWITH_ASAN=ON ...
+		./mtr --debug-server rpl_multi_source_slave_files --parallel=32 --repeat=1000
+	
+	Bug 78995 UAF: Reproduced
+		install.sh: cmake -DWITH_DEBUG=ON -DWITH_ASAN=ON
+		./mtr --debug-server rpl_checksum_cache --parallel=3 --repeat=50
+
+	Bug 78965 HO: Cannot Reproduced, always pass the test
+		install.sh: cmake -DWITH_ASAN=ON ...
+		./mtr --do-test=mysqlpump --force --retry=0 --big-test
+
+	Bug 79648 HO: 
+		CREATE TABLE t1 (id INTEGER);
+		CREATE TABLE t2 (id INTEGER);
+
+		INSERT INTO t1 (id) VALUES (1), (1), (1),(1);
+		INSERT INTO t1 (id) SELECT id FROM t1; /* 8 */
+		INSERT INTO t1 (id) SELECT id FROM t1; /* 16 */
+		INSERT INTO t1 (id) SELECT id FROM t1; /* 32 */
+		INSERT INTO t1 (id) SELECT id FROM t1; /* 64 */
+		INSERT INTO t1 (id) SELECT id FROM t1; /* 128 */
+		INSERT INTO t1 SELECT id+1 FROM t1;
+		INSERT INTO t1 SELECT id+2 FROM t1;
+		INSERT INTO t1 SELECT id+4 FROM t1;
+		INSERT INTO t1 SELECT id+8 FROM t1;
+		INSERT INTO t1 SELECT id+16 FROM t1;
+		INSERT INTO t1 SELECT id+32 FROM t1;
+		INSERT INTO t1 SELECT id+64 FROM t1;
+		INSERT INTO t1 SELECT id+128 FROM t1;
+		INSERT INTO t1 SELECT id+256 FROM t1;
+		INSERT INTO t1 SELECT id+512 FROM t1;
+		INSERT INTO t1 SELECT id+1024 FROM t1;
+		INSERT INTO t1 SELECT id+2048 FROM t1;
+		INSERT INTO t1 SELECT id+4096 FROM t1;
+		INSERT INTO t1 SELECT id+8192 FROM t1;
+
+		SELECT SUM(DISTINCT id) sm FROM t1;
+
+		SET max_heap_table_size=511*1024;
+
+		SELECT SUM(DISTINCT id) sm FROM t1;
