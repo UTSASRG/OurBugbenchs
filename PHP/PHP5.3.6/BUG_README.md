@@ -8,10 +8,17 @@ Link: http://www.cvedetails.com/cve/CVE-2016-6296/
 Command: 'php ./ho1.php'
   The script takes a few minutes to run. You should see a segmentation fault.
 
-2. Summary: PHP Sec Bug #72433
+2. Summary: PHP Sec Bug #72433 (UAF)
 
 Link: https://bugs.php.net/bug.php?id=72433
 
 Command: 'php ./uaf1.php'
   Output of "string(13) "filler_zval_2" indicates error
+
+3. Summary: PHP Sec Bug #72340	Double Free Courruption in wddx_deserialize
+
+Link: https://bugs.php.net/bug.php?id=72340
+
+Command: 'php ./df1.php' or 'php ./df1-1.php'
+
 

@@ -28,3 +28,6 @@ Status: Heap Overflow reproduced. Causes Segmentation Fault. Sampler not current
 
 Bug ID: PHP Sec Bug #72433 (UAF)
 Status: UAF error with no crash. See PHP folder.
+
+Bug ID: PHP Sec Bug #72340 (DF)
+Status: DF error with no crash. See PHP folder.
