@@ -1,0 +1,49 @@
+Vim: Warning: Output is not to a terminal
+[?1049h[?1h=[1;28r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[28;1H"sploit/foo%;eval eval `echo 0:64617465203e3e2070776e6564 | xxd -r`;'bar" is a directory[1m[35mDoubleTake: Buffer overflow at address 0x1001d1180 with value 0xcafeba002a2f7261. size ee start 0x1001d1090
+[0m
+[1m[35mDoubleTake: Buffer overflow at address 0x1001d1180 with value 0xcafeba002a2f7261. size ee start 0x1001d1090
+[0m
+[1m[35mDoubleTake: Buffer overflow at address 0x1001d1178 with value 0x622227223b60722d. size ee start 0x1001d1090
+[0m
+[1m[35mROLLBACK now!
+[0m
+[1m[35mDoubleTake: Buffer overflow at address 0x1001d1178 with value 0x622227223b60722d. size ee start 0x1001d1090
+[0m
+[1m[35mROLLBACK now!
+[0m
+[1m[35mDoubleTake: checking 0 point: address 0x1001d1180 currentvalue 0 value cafebabecafebabe
+[0m
+[1m[35mDoubleTake: checking 1 point: address 0x1001d1178 currentvalue 0 value 7e0100000000002d
+[0m
+[1m[35mWARNING: we have 2 watchpoints triggered, only one watchpoint allowed.
+[0m
+[1m[35mDoubleTake: checking 0 point: address 0x1001d1180 currentvalue cafebabecafebabe value cafebabecafebabe
+[0m
+[1m[35mDoubleTake: checking 1 point: address 0x1001d1178 currentvalue 7e0100000000002d value 7e0100000000722d
+[0m
+[1m[35mDoubleTake: checking 0 point: address 0x1001d1180 currentvalue cafebabecafebabe value cafebabecafebabe
+[0m
+[1m[35mDoubleTake: checking 1 point: address 0x1001d1178 currentvalue 7e0100000000722d value 7e0100000060722d
+[0m
+[1m[35mDoubleTake: checking 0 point: address 0x1001d1180 currentvalue cafebabecafebabe value cafebabecafebabe
+[0m
+[1m[35mDoubleTake: checking 1 point: address 0x1001d1178 currentvalue 7e0100000060722d value 7e0100003b60722d
+[0m
+[1m[35mDoubleTake: checking 0 point: address 0x1001d1180 currentvalue 0 value cafebabecafebabe
+[0m
+[1m[35mDoubleTake: checking 1 point: address 0x1001d1178 currentvalue 0 value 7e0100000000002d
+[0m
+[1m[35mWARNING: we have 2 watchpoints triggered, only one watchpoint allowed.
+[0m
+[1m[35mDoubleTake: checking 0 point: address 0x1001d1180 currentvalue cafebabecafebabe value cafebabecafebabe
+[0m
+[1m[35mDoubleTake: checking 1 point: address 0x1001d1178 currentvalue 7e0100000000002d value 7e0100000000722d
+[0m
+[1m[35mDoubleTake: checking 0 point: address 0x1001d1180 currentvalue cafebabecafebabe value cafebabecafebabe
+[0m
+[1m[35mDoubleTake: checking 1 point: address 0x1001d1178 currentvalue 7e0100000000722d value 7e0100000060722d
+[0m
+[1m[35mDoubleTake: checking 0 point: address 0x1001d1180 currentvalue cafebabecafebabe value cafebabecafebabe
+[0m
+[1m[35mDoubleTake: checking 1 point: address 0x1001d1178 currentvalue 7e0100000060722d value 7e0100003b60722d
+[0m
