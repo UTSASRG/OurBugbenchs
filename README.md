@@ -22,6 +22,6 @@ App: CVS
 Bug ID: (DF)
 Status: compiles properly, now attempting to start server and reproduce bug.
 
-App: OPENSSL
-Bug ID: HeartBleed (HO)
-Status: OPENSSL may use it's own internal memory manager with openssl_malloc(). Investigating whether or not sampler can detect this overflow.
+App: PHP 5.6.3
+Bug ID: CVE-2016-6296 (HO)
+Status: Heap Overflow reproduced. Causes Segmentation Fault. Sampler not currently detecting overflow. PHP folder added with reproduction instructions.
