@@ -25,3 +25,5 @@ Status: compiles properly, now attempting to start server and reproduce bug.
 App: PHP 5.6.3
 Bug ID: CVE-2016-6296 (HO)
 Status: Heap Overflow reproduced. Causes Segmentation Fault. Sampler not currently detecting overflow. PHP folder added with reproduction instructions.
+Bug ID: PHP Sec Bug #72479 (UAF)
+Status: Runs quickly. Sampler catches the UAF errors. More details in PHP folder.
