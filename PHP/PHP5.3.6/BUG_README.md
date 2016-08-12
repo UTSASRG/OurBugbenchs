@@ -8,16 +8,10 @@ Link: http://www.cvedetails.com/cve/CVE-2016-6296/
 Command: 'php ./ho1.php'
   The script takes a few minutes to run. You should see a segmentation fault.
 
-2. Summary: Use After Free Vulnerability in SNMP with GC and unserialize()
+2. Summary: PHP Sec Bug #72433
 
-Link: https://bugs.php.net/bug.php?id=72479
+Link: https://bugs.php.net/bug.php?id=72433
 
 Command: 'php ./uaf1.php'
-  The script runs immediatley and you can see sampler's output.
+  Output of "string(13) "filler_zval_2" indicates error
 
-3. Summany: Use After Free in unserialize() with Unexpected Session Deserialization
-
-Link: https://bugs.php.net/bug.php?id=72562
-
-Command: 'php ./uaf2.php'
-  Script runs quickly and Sampler outputs many errors.

