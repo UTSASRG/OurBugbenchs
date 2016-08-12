@@ -14,3 +14,10 @@ Link: https://bugs.php.net/bug.php?id=72479
 
 Command: 'php ./uaf1.php'
   The script runs immediatley and you can see sampler's output.
+
+3. Summany: Use After Free in unserialize() with Unexpected Session Deserialization
+
+Link: https://bugs.php.net/bug.php?id=72562
+
+Command: 'php ./uaf2.php'
+  Script runs quickly and Sampler outputs many errors.
