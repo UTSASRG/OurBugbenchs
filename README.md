@@ -23,11 +23,5 @@ Bug ID: (DF)
 Status: compiles properly, now attempting to start server and reproduce bug.
 
 App: PHP 5.6.3
-Bug ID: CVE-2016-6296 (HO)
-Status: Heap Overflow reproduced. Causes Segmentation Fault. Sampler not currently detecting overflow. PHP folder added with reproduction instructions.
-
-Bug ID: PHP Sec Bug #72433 (UAF)
-Status: UAF error with no crash. See PHP folder.
-
-Bug ID: PHP Sec Bug #72340 (DF)
-Status: DF error with no crash. See PHP folder.
+Bugs: One DF, One HO, 5 UAF
+Status: All 7 bugs verified with address sainitizer. See BUG_README.md in PHP5.3.6 folder for more info.
