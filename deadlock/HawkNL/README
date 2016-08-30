@@ -1,4 +1,6 @@
-1. copy deadlock.c and makefile.deadlock into ./hawknl-versionnum/src/
+HawkNL-1.6b3
+
+1. copy deadlock.c and makefile.deadlock into ./HawkNL16b3/src/
 
 2. modify nl.c by adding a sentence “sleep(1);” immediately following the lines 551 and 704 
 

@@ -1,3 +1,5 @@
+SQLite-3.3.3
+
 1. copy deadlock_test/ into SQLite-3.3.3/
 
 2. change deadlock_test/Makefile
