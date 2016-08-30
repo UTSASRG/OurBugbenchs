@@ -1,0 +1,67 @@
+0. Bug information WWW page:
+   https://bz.apache.org/bugzilla/show_bug.cgi?id=42031
+   Archived original post contained in file: original_post.txt
+	
+1. Clone affected commit 525116 using SVN:
+   svn co https://svn.apache.org/repos/asf/httpd/httpd/trunk@525116
+
+2. Download and extract Apache APR v1.3.0:
+   wget https://github.com/apache/apr/archive/1.3.0.zip -O apr-1.3.0.zip
+   unzip apr-1.3.0.zip
+
+3. Download and extract Apache APR-Util v1.3.0:
+   wget https://github.com/apache/apr-util/archive/1.3.0.zip -O apr-util-1.3.0.zip
+   unzip apr-util-1.3.0.zip
+
+4. Run buildconf on httpd repo:
+   cd trunk/
+   ./buildconf --with-apr=../apr-1.3.0 --with-apr-util=../apr-util-1.3.0
+
+5. Build httpd:
+   ./configure --prefix=/usr/local/apache2 --with-mpm=event
+   make
+   sudo make install
+
+6. Edit httpd.conf file and add the following section:
+   sudo vi /usr/local/apache2/conf/httpd.conf
+	
+   Add this block of text:
+
+	 <IfModule mpm_event_module>
+	 StartServers 1
+	 MaxClients 3
+	 MinSpareThreads 1
+	 MaxSpareThreads 3
+	 ThreadsPerChild 3
+	 MaxRequestsPerChild 0
+	 Timeout 10
+	 KeepAlive On
+	 MaxKeepAliveRequests 0
+	 KeepAliveTimeout 5
+	 AcceptMutex pthread
+	 </IfModule>
+
+7. Create a large (2000 MB) file to be used to induce the bug:
+   dd if=/dev/zero of=largefile.bin bs=1000000 count=2000
+	
+8. Place the file in the root directory of Apache server:
+   sudo mv largefile.bin /usr/local/apache2/htdocs/
+
+9. Launch Apache:
+   sudo /usr/local/apache2/bin/apachectl start
+
+10. Run script to initiate many simultaneous downloads, exceeding the server's
+    maximum number of client threads, and ultimately inducing deadlock:
+    ./induce_deadlock.sh
+
+11. Run wget in a terminal window to observe the status of the Apache server.
+    The transfer rate will decrease for a period, before halting entirely. If the
+    file should finish downloading, simply run wget again to continue monitoring
+    the server's status.
+    wget http://localhost/largefile.bin
+
+12. Once the server has frozen, kill all pending wget instances:
+    sudo killall wget
+
+13. Refer to the information located at the WWW site (or in original_post.txt)
+    for more details relating to this bug.

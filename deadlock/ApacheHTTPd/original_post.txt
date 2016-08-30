@@ -1,0 +1,294 @@
+Child process freezes with many downloading against MaxClients.
+
+How to reproduce:
+
+(1) configuration to httpd.conf
+
+StartServers          1
+MaxClients          3
+MinSpareThreads      1
+MaxSpareThreads      3
+ThreadsPerChild      3
+MaxRequestsPerChild   0
+Timeout 10
+KeepAlive On
+MaxKeepAliveRequests 0
+KeepAliveTimeout 5
+
+(2) put a large file "test.mpg" (about 200MB) on DocumentRoot
+(3) apachectl start
+(4) execute many downloading simultaneously.
+e.g. bash and wget:
+$ for (( i=0 ; i<20 ; i++ )); do wget -b http://localhost/test.mpg; done;
+
+Then the child process often freezes. If not, try to download more.
+
+(5) terminate downloading
+e.g. bash and wget:
+$ killall wget
+
+(6) access to any file from web browser.
+However long you wait, server won't response.
+
+
+"apachectl graceful" then in error log
+[Tue Apr 03 16:41:14 2007] [debug] event.c(1392): the listener thread didn't 
+exit
+
+"apachectl stop" then in error log
+[Tue Apr 03 16:48:18 2007] [warn] child process 31077 still did not exit, 
+sending a SIGTERM
+[Tue Apr 03 16:48:20 2007] [warn] child process 31077 still did not exit, 
+sending a SIGTERM
+[Tue Apr 03 16:48:22 2007] [warn] child process 31077 still did not exit, 
+sending a SIGTERM
+[Tue Apr 03 16:48:24 2007] [error] child process 31077 still did not exit, 
+sending a SIGKILL
+
+
+
+OS: Fedora Core 6
+kernel: 2.6.20-1.2933.fc6
+glibc: 2.5-10.fc6
+
+httpd revision 525116.
+$ ./httpd -V
+Server version: Apache/2.3.0-dev (Unix)
+Server built:   Apr  3 2007 15:49:09
+Server's Module Magic Number: 20060905:2
+Server loaded:  APR 1.3.0-dev, APR-UTIL 1.3.0-dev
+Compiled using: APR 1.3.0-dev, APR-UTIL 1.3.0-dev
+Architecture:   32-bit
+Server MPM:     Event
+  threaded:     yes (fixed thread count)
+    forked:     yes (variable process count)
+Server compiled with....
+ -D APACHE_MPM_DIR="server/mpm/experimental/event"
+ -D APR_HAS_SENDFILE
+ -D APR_HAS_MMAP
+ -D APR_HAVE_IPV6 (IPv4-mapped addresses enabled)
+ -D APR_USE_SYSVSEM_SERIALIZE
+ -D APR_USE_PTHREAD_SERIALIZE
+ -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+ -D APR_HAS_OTHER_CHILD
+ -D AP_HAVE_RELIABLE_PIPED_LOGS
+ -D DYNAMIC_MODULE_LIMIT=128
+ -D HTTPD_ROOT="/usr/local/apache2"
+ -D SUEXEC_BIN="/usr/local/apache2/bin/suexec"
+ -D DEFAULT_SCOREBOARD="logs/apache_runtime_status"
+ -D DEFAULT_ERRORLOG="logs/error_log"
+ -D AP_TYPES_CONFIG_FILE="conf/mime.types"
+ -D SERVER_CONFIG_FILE="conf/httpd.conf"
+
+
+
+backtrace of frozen child process:
+
+Thread 5 (Thread -1219343472 (LWP 30355)):
+#0  0x007b9402 in __kernel_vsyscall ()
+No symbol table info available.
+#1  0x4bb3998e in __lll_mutex_lock_wait () from /lib/libpthread.so.0
+No symbol table info available.
+#2  0x4bb357fc in _L_mutex_lock_85 () from /lib/libpthread.so.0
+No symbol table info available.
+#3  0x4bb3533d in pthread_mutex_lock () from /lib/libpthread.so.0
+No symbol table info available.
+#4  0x0055a308 in apr_thread_mutex_lock (mutex=0x83c72f8)
+    at locks/unix/thread_mutex.c:92
+        rv = 0
+#5  0x08091234 in process_socket (p=0x83f3cd0, sock=0x83f3d10, cs=0x83f3eb0,
+    my_child_num=0, my_thread_num=0) at event.c:656
+        output_filter = (ap_filter_t *) 0x83f4448
+        rv = 0
+        c = (conn_rec *) 0x83f3f08
+        pt = (listener_poll_type *) 0x83f3ee8
+        conn_id = 0
+        rc = 2
+        sbh = (ap_sb_handle_t *) 0x83f45c8
+#6  0x0809215c in worker_thread (thd=0x83b94e0, dummy=0x83e94e0)
+    at event.c:1194
+        ti = (proc_info *) 0x83e94e0
+        process_slot = 0
+        thread_slot = 0
+        csd = (apr_socket_t *) 0x83f3d10
+        cs = (conn_state_t *) 0x83f3eb0
+        ptrans = (apr_pool_t *) 0x83f3cd0
+        rv = 0
+        is_idle = 0
+#7  0x00566f70 in dummy_worker (opaque=0x83b94e0)
+    at threadproc/unix/thread.c:142
+        thread = (apr_thread_t *) 0x83b94e0
+#8  0x4bb333db in start_thread () from /lib/libpthread.so.0
+No symbol table info available.
+#9  0x4ba1726e in clone () from /lib/libc.so.6
+No symbol table info available.
+
+
+
+Thread 4 (Thread -1229833328 (LWP 30356)):
+#0  0x007b9402 in __kernel_vsyscall ()
+No symbol table info available.
+#1  0x4bb3998e in __lll_mutex_lock_wait () from /lib/libpthread.so.0
+No symbol table info available.
+#2  0x4bb357fc in _L_mutex_lock_85 () from /lib/libpthread.so.0
+No symbol table info available.
+#3  0x4bb3533d in pthread_mutex_lock () from /lib/libpthread.so.0
+No symbol table info available.
+#4  0x0055a308 in apr_thread_mutex_lock (mutex=0x83c72f8)
+    at locks/unix/thread_mutex.c:92
+        rv = 0
+#5  0x08091234 in process_socket (p=0x83e9c38, sock=0x83e9c78, cs=0x83e9e18,
+    my_child_num=0, my_thread_num=1) at event.c:656
+        output_filter = (ap_filter_t *) 0x83ea3b0
+        rv = 0
+        c = (conn_rec *) 0x83e9e70
+        pt = (listener_poll_type *) 0x83e9e50
+        conn_id = 1
+        rc = 2
+        sbh = (ap_sb_handle_t *) 0x83ea818
+#6  0x0809215c in worker_thread (thd=0x83b9500, dummy=0x83e94f0)
+    at event.c:1194
+        ti = (proc_info *) 0x83e94f0
+        process_slot = 0
+        thread_slot = 1
+        csd = (apr_socket_t *) 0x83e9c78
+        cs = (conn_state_t *) 0x83e9e18
+        ptrans = (apr_pool_t *) 0x83e9c38
+        rv = 0
+        is_idle = 0
+#7  0x00566f70 in dummy_worker (opaque=0x83b9500)
+    at threadproc/unix/thread.c:142
+        thread = (apr_thread_t *) 0x83b9500
+#8  0x4bb333db in start_thread () from /lib/libpthread.so.0
+No symbol table info available.
+#9  0x4ba1726e in clone () from /lib/libc.so.6
+No symbol table info available.
+
+
+
+#8  0x4bb333db in start_thread () from /lib/libpthread.so.0
+No symbol table info available.
+#9  0x4ba1726e in clone () from /lib/libc.so.6
+No symbol table info available.
+
+Thread 3 (Thread -1240323184 (LWP 30357)):
+#0  0x007b9402 in __kernel_vsyscall ()
+No symbol table info available.
+#1  0x4bb3998e in __lll_mutex_lock_wait () from /lib/libpthread.so.0
+No symbol table info available.
+#2  0x4bb357fc in _L_mutex_lock_85 () from /lib/libpthread.so.0
+No symbol table info available.
+#3  0x4bb3533d in pthread_mutex_lock () from /lib/libpthread.so.0
+No symbol table info available.
+#4  0x0055a308 in apr_thread_mutex_lock (mutex=0x83c72f8)
+    at locks/unix/thread_mutex.c:92
+        rv = 0
+#5  0x08091382 in process_socket (p=0x8419eb8, sock=0x8419ef0, cs=0x841a090,
+    my_child_num=0, my_thread_num=2) at event.c:697
+        rc = 0
+        pt = (listener_poll_type *) 0x841a0c8
+        c = (conn_rec *) 0x841a0e8
+        pt = (listener_poll_type *) 0x841a0c8
+        conn_id = 2
+        rc = -2
+        sbh = (ap_sb_handle_t *) 0x841a088
+#6  0x0809215c in worker_thread (thd=0x83b9520, dummy=0x83e94e0)
+    at event.c:1194
+        ti = (proc_info *) 0x83e94e0
+        process_slot = 0
+        thread_slot = 2
+        csd = (apr_socket_t *) 0x8419ef0
+        cs = (conn_state_t *) 0x0
+        ptrans = (apr_pool_t *) 0x8419eb8
+        rv = 0
+        is_idle = 0
+#7  0x00566f70 in dummy_worker (opaque=0x83b9520)
+    at threadproc/unix/thread.c:142
+        thread = (apr_thread_t *) 0x83b9520
+#8  0x4bb333db in start_thread () from /lib/libpthread.so.0
+No symbol table info available.
+#9  0x4ba1726e in clone () from /lib/libc.so.6
+No symbol table info available.
+
+Thread 2 (Thread -1250813040 (LWP 30358)):
+#0  0x007b9402 in __kernel_vsyscall ()
+No symbol table info available.
+#1  0x4bb371a6 in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
+No symbol table info available.
+#2  0x0055876f in apr_thread_cond_wait (cond=0x83b9478, mutex=0x83b9448)
+    at locks/unix/thread_cond.c:68
+        rv = 0
+#3  0x08094de4 in ap_queue_info_wait_for_idler (queue_info=0x83b9430)
+    at fdqueue.c:158
+        rv = 0
+        prev_idlers = 0
+#4  0x080917bd in get_worker (have_idle_worker_p=0xb5721364) at event.c:855
+        rc = 1270095860
+#5  0x08091dd1 in listener_thread (thd=0x83b9540, dummy=0x83e9500)
+    at event.c:1063
+        rc = 0
+        ti = (proc_info *) 0x83e9500
+        process_slot = 0
+        tpool = (apr_pool_t *) 0x83c72c0
+        csd = (void *) 0x8419ef0
+        ptrans = (apr_pool_t *) 0x8419eb8
+        lr = (ap_listen_rec *) 0x832b520
+        have_idle_worker = 0
+        cs = (conn_state_t *) 0x83fff50
+        out_pfd = (const apr_pollfd_t *) 0x83c73ac
+        num = 0
+        time_now = 1175583389600457
+        timeout_interval = 1000000
+        timeout_time = 1175583389700457
+        pt = (listener_poll_type *) 0x83c73f0
+#6  0x00566f70 in dummy_worker (opaque=0x83b9540)
+    at threadproc/unix/thread.c:142
+        thread = (apr_thread_t *) 0x83b9540
+#7  0x4bb333db in start_thread () from /lib/libpthread.so.0
+No symbol table info available.
+#8  0x4ba1726e in clone () from /lib/libc.so.6
+No symbol table info available.
+
+Thread 1 (Thread -1208617280 (LWP 30353)):
+#0  0x007b9402 in __kernel_vsyscall ()
+No symbol table info available.
+#1  0x4bb39d6b in read () from /lib/libpthread.so.0
+No symbol table info available.
+#2  0x08095389 in ap_mpm_pod_check (pod=0x8341640) at pod.c:54
+        c = 0 '\0'
+        fd = 5
+        rc = -1075834592
+#3  0x08092bb6 in child_main (child_num_arg=0) at event.c:1553
+        threads = (apr_thread_t **) 0x83e94d0
+        rv = 0
+        ts = (thread_starter *) 0x83b9300
+        thread_attr = (apr_threadattr_t *) 0x83b9310
+        start_thread_id = (apr_thread_t *) 0x83b9348
+#4  0x08092d3c in make_child (s=0x832ef78, slot=0) at event.c:1639
+        pid = 0
+#5  0x08092dbf in startup_children (number_to_start=1) at event.c:1658
+        i = 0
+#6  0x080934e4 in ap_mpm_run (_pconf=0x832d0a8, plog=0x835d168, s=0x832ef78)
+    at event.c:1978
+        remaining_children_to_start = 1
+#7  0x08064abb in main (argc=3, argv=0xbfe011a4) at main.c:750
+        c = 0 '\0'
+        configtestonly = 0
+        confname = 0x80a0d7d "conf/httpd.conf"
+        def_server_root = 0x80a0d8d "/usr/local/apache2"
+        temp_error_log = 0x0
+        error = 0x0
+        process = (process_rec *) 0x832b128
+        server_conf = (server_rec *) 0x832ef78
+        pglobal = (apr_pool_t *) 0x832b0a0
+        pconf = (apr_pool_t *) 0x832d0a8
+        plog = (apr_pool_t *) 0x835d168
+        ptemp = (apr_pool_t *) 0x8361178
+        pcommands = (apr_pool_t *) 0x832f0b0
+        opt = (apr_getopt_t *) 0x832f148
+        rv = 0
+        mod = (module **) 0x80acc90
+        optarg = 0x0
+        signal_server = (
+    apr_OFN_ap_signal_server_t *) 0x80859a8 <ap_signal_server>
+#0  0x007b9402 in __kernel_vsyscall ()

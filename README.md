@@ -25,3 +25,7 @@ Status: compiles properly, now attempting to start server and reproduce bug.
 App: PHP 5.6.3
 Bugs: One DF, One HO, 5 UAF
 Status: All 7 bugs verified with address sainitizer. See BUG_README.md in PHP5.3.6 folder for more info.
+
+App: Apache HTTPD v2.3.0-dev
+Bugs: One deadlock
+Status: Deadlock is reproducible, however, is not detectable by Dimmunix or LockAnalyzer.
