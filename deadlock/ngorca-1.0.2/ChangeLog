@@ -1,0 +1,77 @@
+ Latest Changes for
+
+     ___      __     ___   _ __   ___     __
+   /' _ `\  /'_ `\  / __`\/\`'__\/'___\ /'__`\
+   /\ \/\ \/\ \_\ \/\ \_\ \ \ \//\ \__//\ \_\ \_
+   \ \_\ \_\ \____ \ \____/\ \_\\ \____\ \__/ \_\
+    \/_/\/_/\/___ \ \/___/  \/_/ \/____/\/__/\/_/
+              /\____/
+              \_/__/
+
+
+ ----------------------------------------------------------------------
+   Version 1.0.2        2010-01-10
+ ----------------------------------------------------------------------
+
+ Changes:
+  o Added licence exception for OpenSSL because it is not GPL licenced
+    but under an Apache-style licence.
+
+ ----------------------------------------------------------------------
+   Version 1.0.1        2009-10-25
+ ----------------------------------------------------------------------
+
+ Changes:
+  o Added calculation of 5-8 byte passwords as default. The password
+    length option is still available.
+
+ ----------------------------------------------------------------------
+   Version 0.1.2        2009-10-12
+ ----------------------------------------------------------------------
+
+ Changes:
+  o Added Oracle database 11g algorithm with SHA1
+    If the SHA1 hash value is present in hash file the case sensitive
+    password is calculated
+  o Changed binary name to ngorca (lowercase)
+
+ Bugfixes:
+  o Fixed bug in logging functions
+
+ ----------------------------------------------------------------------
+   Version 0.1.1        2009-09-25
+ ----------------------------------------------------------------------
+
+ Changes:
+  o Changed build system and removed GNU extensions to get worked
+    for linux/UNIX and Mac OS
+  o Removed pthread_cancel and pthread_exit to avoid memory leaks
+    which comes with these calls.
+
+ Bugfixes:
+  o Fixed issue 2: Segmentation fault username/hash value length
+  o Fixed issue 3: Percent print out does not work correct
+
+ ----------------------------------------------------------------------
+   Version 0.1.0        2009-09-06
+ ----------------------------------------------------------------------
+
+ Changes:
+   o Added percent print out in verbose level 4
+      all threads prints out +10 percent
+   o Added upper limits for password length to fit in uint64_t
+      numeric charset - 19
+      alpha charset - 13
+      alphanumeric charset - 12
+      alphanumeric and special characters - 10
+   o Improved percent print out. One status line which is updated if
+      all threads calculated +10%
+
+ Bugfixes:
+   o Fixed overflow in cpu time measurement
+
+
+ ----------------------------------------------------------------------
+   Version 0.0.1        2009-08-22
+ ----------------------------------------------------------------------
+

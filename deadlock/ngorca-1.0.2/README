@@ -1,0 +1,83 @@
+ngorca
+
+   Password recovery tool for Oracle databes versions 7-11g Rel.2.
+
+   ngorca is a multicore supported password recovery tool using exhaustive key
+   search. Oracle databases encrypt passwords with a simple DES encryption
+   algorithm, as described by Joshua Wright and Carlos Sid:
+   'An Assessment of the Oracle Password Hashing Algorithm'.
+   Due to the weak hashing algorithm and the constantly improvement hardware,
+   performance, passwords can be found in minutes, depending on the length.
+
+   ngorca supports muliple CPU cores by using threads. The number of threads can
+   be set with the 't' option. For optimal results it is recommended to use the
+   number of CPUs that are present in the machine.
+
+   On a Intel(R) Core(TM)2 Duo CPU ngorca calculates 1.6 million 6 byte
+   passwords from an alphanumeric charset per second. This means you need
+   23 minutes to find the correct password in the worst case.
+
+Licence:
+
+   GNU General Public License v3
+
+   In addition, as a special exception, the copyright holders give
+   permission to link the code of portions of this program with the
+   OpenSSL library under certain conditions as described in each
+   individual source file, and distribute linked combinations including
+   the two. You must obey the GNU General Public License in all
+   respects for all of the code used other than OpenSSL.  If you modify
+   file(s) with this exception, you may extend this exception to your
+   version of the file(s), but you are not obligated to do so. If you
+   do not wish to do so, delete this exception statement from your
+   version.  If you delete this exception statement from all source files
+   in the program, then also delete it here.
+
+
+Compilation:
+
+   To compile ngorca just type './configure' followed by 'make' in the root
+   directory of this package. The binary file could be found in the ngorca/src/bin
+   directory where you can use it or use 'make install' to install ngorca.
+
+
+Usage:
+
+-f hashlist
+   To use ngorca a list of username and hash is required, which has the format
+   username:hash. The hash values are calculated one after another.
+   example of hash file entry with old DES hash and SHA1 hash:
+   NETGARAGE:5D7F5FD88AE4C07F:EAC3EAC57FF0635AB298EB40CBDA1BB45DFC1B7F20464AA591C1613A2CB8
+   <username>:<16 byte DES hash>:<40 byte SHA1 hash + 20 byte salt>
+   In oracle versions 7-10g there is only the DES hash.
+
+-l password length
+   Length of the password. If this option is not set the passwords from a length
+   of 5-8 bytes are calculated.
+
+-c charset
+   The charset of the password. 1 for numeric, 2 for alpha, 3 for alpha numeric
+   and 4 for alpha numeric with special characters. The default is 3.
+
+-o logfile
+   A logfile could be specified. It contains the passwords which are found and
+   some info messages. The default logfile name is ngorca.log placed in the
+   directory the binary runs.
+
+-v verbose level
+   Loglevel for the logfile and standard output 1 - 4 with 4 as the highest level
+   which contains percent printouts. The default is 1.
+
+-t thread number
+   The number of threads which should be used. It is recommended to take the
+   number of cpu's which you want to involve in the calculation for the best
+   result. The default is 1.
+
+example: ngorca -f hashlist -l6 -c3 -t2 -v4
+
+
+For bugreporting or feature requests write a mail to ebrosius@netgarage.org or
+use the issues tracker on the project hosting site http://code.google.com/p/ngoca
+
+
+

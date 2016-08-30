@@ -1,0 +1,50 @@
+thread #0 has recorded 17 sync events
+  PHASE MARK  [0, 1)
+  PHASE MARK  [1, 2)
+  PHASE MARK  [2, 3)
+  PHASE MARK  [3, 4)
+  PHASE MARK  [4, 5)
+  PHASE MARK  [5, 6)
+  PHASE MARK  [6, 7)
+  PHASE MARK  [7, 8)
+  PHASE MARK  [8, 9)
+  PHASE MARK  [9, 10)
+  PHASE MARK  [10, 11)
+  PHASE MARK  [11, 12)
+  PHASE MARK  [12, 13)
+  PHASE MARK  [13, 14)
+  PHASE MARK  [14, 15)
+  PHASE MARK  [15, 16)
+  PHASE MARK  [16, 32)
+thread #1 has recorded 1 sync events
+  PHASE MARK  [1, 300000)
+thread #2 has recorded 1 sync events
+  PHASE MARK  [2, 300000)
+thread #3 has recorded 1 sync events
+  PHASE MARK  [3, 300000)
+thread #4 has recorded 1 sync events
+  PHASE MARK  [4, 300000)
+thread #5 has recorded 1 sync events
+  PHASE MARK  [5, 300000)
+thread #6 has recorded 1 sync events
+  PHASE MARK  [6, 300000)
+thread #7 has recorded 1 sync events
+  PHASE MARK  [7, 300000)
+thread #8 has recorded 1 sync events
+  PHASE MARK  [8, 300000)
+thread #9 has recorded 1 sync events
+  PHASE MARK  [9, 300000)
+thread #10 has recorded 1 sync events
+  PHASE MARK  [10, 300000)
+thread #11 has recorded 1 sync events
+  PHASE MARK  [11, 300000)
+thread #12 has recorded 1 sync events
+  PHASE MARK  [12, 300000)
+thread #13 has recorded 1 sync events
+  PHASE MARK  [13, 300000)
+thread #14 has recorded 1 sync events
+  PHASE MARK  [14, 300000)
+thread #15 has recorded 1 sync events
+  PHASE MARK  [15, 300000)
+thread #16 has recorded 1 sync events
+  PHASE MARK  [16, 300000)

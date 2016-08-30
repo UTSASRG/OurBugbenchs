@@ -1,0 +1,3 @@
+Run ./make_bench.sh 
+The executables are moves to folder example.
+Run in folder example using the given parmfiles.

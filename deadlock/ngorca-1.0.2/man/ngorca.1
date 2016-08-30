@@ -1,0 +1,66 @@
+.\" Process this file with
+.\" groff -man -Tascii ngorca.1
+.\"
+.TH NGORCA 1 "October 2009" Linux "User Manuals
+.SH NAME
+ngorca - Password recovery tool for Oracle databases
+.SH SYNOPSIS
+.B ngorca [
+.B -f
+.I hashfile
+.B ] [
+.I OPTIONS
+.B ]
+.SH DESCRIPTION
+.B ngorca
+is a multithreaded password recovery tool using exhaustive
+key search for Oracle versions 7-11g Rel.2.  Due to
+the weak hashing algorithm and constantly improving hardware
+performance, passwords can be found in minutes, depending on
+their length.
+.SH OPTIONS
+.IP "-f hashfile"
+To use ngorca a list of usernames and hashes is required,
+which has the format username:hash. The username has a
+maxiumum length of 64 characters and the hash is always
+a 16 byte hex value. If the 11g algorithm is used a 40 byte
+SHA1 plus 20 bytes salt must be added. The hash values are calculated one
+after another.
+Example of hash file entry with old DES hash and SHA1 hash:
+NETGARAGE:5D7F5FD88AE4C07F:EAC3EAC57FF0635AB298EB40CBDA1BB45DFC1B7F20464AA591C1613A2CB8
+.IP "-l password length"
+The length of the password. If this option is not set, passwords
+with the length of 5-8 bytes are calculated.
+.IP "-c charset"
+The charset of the password. 1 for numeric, 2 for alpha,
+3 for alpha numeric and 4 for alpha numeric with special
+characters. The default is alpha numeric.
+.IP "-t thread number"
+The number of threads which should be used. It is recom-
+mended to take the number of cpu's which you want to
+involve in the calculation for the best result.
+Per default one thread is used.
+.IP "-o logfile"
+A logfile could be specified. It contains the passwords
+which are found and some info messages. The default log-
+file name is ngorca.log placed in the directory the bin-
+ary runs in.
+.IP "-v verbose level"
+Loglevel for the logfile and standard output 1 - 4 with
+4 as the highest level which contains percent printouts.
+The default loglevel is 1.
+.SH EXAMPLE
+.R "ngorca -f hashlist -c3 -l6 -t2 -v4"
+
+.SH "BUG REPORT"
+For bugreporting write a mail to ebrosius@netgarage.org or use the
+issues tracker on the project hosting site http://code.google.com/p/ngoca
+.SH COPYRIGHT
+ngorca is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+.SH AUTHOR
+Dennis Krzyzaniak <ebrosius@netgarage.org>
+.SH "SEE ALSO"
+the project site http://netgarage.org

@@ -29,3 +29,6 @@ Status: All 7 bugs verified with address sainitizer. See BUG_README.md in PHP5.3
 App: Apache HTTPD v2.3.0-dev
 Bugs: One deadlock
 Status: Deadlock is reproducible, however, is not detectable by Dimmunix or LockAnalyzer.
+
+Tool: Type Systems for Deadlock Freedom
+http://www.softlab.ntua.gr/~pgerakios/deadlocks/
