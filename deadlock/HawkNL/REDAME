@@ -1,9 +1,0 @@
-1. copy deadlock.c and makefile.deadlock into ./hawknl-versionnum/src/
-
-2. modify nl.c by adding a sentence “sleep(1);” immediately following the lines 551 and 704 
-
-3. link to your library in makefile
-
-4. make -f makefile.linux
-
-5. make -f makefile.deadlock
