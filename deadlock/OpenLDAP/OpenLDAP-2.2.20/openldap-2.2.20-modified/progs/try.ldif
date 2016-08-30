@@ -1,0 +1,11 @@
+# try.ldif
+dn: dc=my-domain, dc=com
+objectClass: top
+objectClass: domain
+dc: my-domain
+
+dn: cn=Manager, dc=my-domain, dc=com
+objectClass: top
+objectClass: person
+cn: Manager
+sn: yuzhen

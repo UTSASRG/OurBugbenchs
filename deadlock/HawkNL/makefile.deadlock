@@ -1,0 +1,10 @@
+all:
+#	gcc -g -O2 -o deadlock deadlock.c -I../include -L./ -lNL -lpthread
+#	gcc -g -O0 -o deadlock deadlock.c -I../include -L./ -rdynamic /home/zjp/projects/LockAnalyzer/unlocksource/liblockanalyzer.so -lNL -ldl -lpthread
+	gcc -O2 -fno-omit-frame-pointer -o deadlock deadlock.c -I../include -L./ -lNL -rdynamic /home/zjp/projects/LockAnalyzer/combined/liblockanalyzer.so -ldl -lpthread
+#	gcc -O2 -fno-omit-frame-pointer -o deadlock deadlock.c -I../include -L./ -lNL -rdynamic /home/zjp/projects/LockAnalyzer/statistic/liblockanalyzer.so -ldl -lpthread
+#	gcc -O2 -fno-omit-frame-pointer -o deadlock deadlock.c -I../include -L./ -lNL -rdynamic /home/zjp/projects/LockAnalyzer/ref/dimmunix/trunk/pthreads/src/libdimmunix.so -ldl -lpthread
+
+clean:
+	rm deadlock *.synclog *.report
+

@@ -1,0 +1,57 @@
+--source include/have_log_bin.inc
+#--source include/have_debug_sync.inc
+
+# Test case to reproduce a deadlock in binlog handling.
+# RESET MASTER locks first LOCK_index and then LOCK_thread_count
+# PURGE BINARY LOGS locks first LOCK_thread_count and LOCK_index.
+# This can lead to deadlock if the two commands run in parallel, with
+# one thread waiting to get LOCK_index and the other waiting for
+# LOCK_thread_count
+
+--echo start connection
+
+--connect(con1,localhost,root,,)
+--connect(con2,localhost,root,,)
+
+connection default;
+CREATE TABLE t1 (a INT PRIMARY KEY);
+FLUSH LOGS;
+INSERT INTO t1 VALUES (1);
+FLUSH LOGS;
+INSERT INTO t1 VALUES (2);
+FLUSH LOGS;
+SHOW BINARY LOGS;
+
+# Start a PURGE BINARY LOGS, pausing just before it takes the first lock.
+connection con1;
+#SET DEBUG_SYNC= "purge_logs_before_LOCK_index SIGNAL con1_ready1 WAIT_FOR con1_cont1";
+#SET DEBUG_SYNC= "purge_logs_after_LOCK_index SIGNAL con1_ready2 WAIT_FOR con1_cont2 TIMEOUT 5";
+send PURGE BINARY LOGS TO "master-bin.000002";
+connection default;
+#SET DEBUG_SYNC= "now WAIT_FOR con1_ready1";
+
+# zjp: lockanalyzer can detect potential, so we can add a sleep here, to make this test case pass
+sleep 5;
+
+# Start RESET MASTER, pausing just before it takes the first lock.
+connection con2;
+#SET DEBUG_SYNC= "reset_logs_before_LOCK_thread_count SIGNAL con2_ready1 WAIT_FOR con2_cont1";
+send RESET MASTER;
+connection default;
+#SET DEBUG_SYNC= "now WAIT_FOR con2_ready1";
+
+connection default;
+# Let PURGE BINARY LOGS take the first lock
+#SET DEBUG_SYNC= "now SIGNAL con1_cont1";
+#SET DEBUG_SYNC= "now WAIT_FOR con1_ready2";
+# Now let con2 continue. It will take LOCK_thread_count and then wait for
+# con1 to release LOCK_index.
+# After 5 seconds con1 will timeout and then wait for con2 to release
+# LOCK_thread_count -> deadlock.
+#SET DEBUG_SYNC= "now SIGNAL con2_cont1";
+
+connection con1;
+reap;
+connection con2;
+reap;
+DROP TABLE t1;

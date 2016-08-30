@@ -1,0 +1,15 @@
+What you should do:
+		1. replace the file the-original-openldap-2.2.20/servers/slapd/back-bdb/cache.c with this cache.c
+		   you will get a modified version of openldap-2.2.20 with an inserted deadlock bug which simulates the bug#3494.
+                   redo the process make, make install. (./configure is not needed)
+		2. replace the file /usr/local/openldap/etc/openldap/slapd.conf with this slapd.conf
+		3. copy the direcotry "progs" into /usr/local/openldap/ (this is the path you install openldap).
+		4. type the command "../bin/ldapadd -x -D "cn=Manager, dc=my-domain, dc=com" -w muzi132126 -f ./try.ldif", and enter.
+		5. compile addop.c, delop.c with gcc -o ./xxx xxx.c -I../include -L../lib -lldap
+		6. launch the slapd deamon with the command "LD_PRELOAD=xxx/libmocklint.so ./slapd -d 256"
+		7. run addop first from a terminator, wait for a while, run the command "./bin/ldapsearch -x -b "dc=my-domain, dc=com", "cn=p1"" from another terminator. (the latter may be required to run multiple times)
+                   This may hopely blocks the slapd. Mocklinter will report it captures a deadlock and kernel will dump a core file for slapd.
+
+the codes involved in this inserted deadlock are marked with "add by yuzhen".
+
+Good luck!

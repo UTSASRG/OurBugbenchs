@@ -1,0 +1,19 @@
+1. cp myinstall-db.sh to db-4.3.27/
+
+2. change myinstall-db.sh and run it to install db in MY_DB_PATH
+
+3. Add " MY_DB_PATH/lib " into /etc/ld.so.conf
+
+4. cp myinstall-openldap.sh to openldap-2.2.20
+
+5. modify ./include/ldap.h by changing LDAP_PORT to 1261 instead of 389
+
+6. Add our library before -lpthread in configure file
+
+6. change and run myinstall-openldap.sh
+
+	if make complains “./openldap-2.2.20/servers/slurpd/config.c:61:14: conflicting types for ‘getline'”, you need to replace all the occurrences of ‘getline’ with ‘get_line’
+
+	if make complains “undefined reference to ‘ssl3_send_alert'”, you need to type “sudo apt-get remove libssl-dev”, and make again
+
+7. append " MY_OPENLDAP_PATH/lib " to /etc/ld.so.conf
