@@ -1,1 +1,5 @@
-change path info in run_testis.sh and run it
+1. copy deadlock_test/ into SQLite-3.3.3/
+
+2. change deadlock_test/Makefile
+
+3. change path info in run_tests.sh and run it
