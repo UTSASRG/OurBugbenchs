@@ -9,6 +9,14 @@ Severity: grave
 Tags: security, upstream
 Found in versions icoutils/0.31.1-1, 0.31.1
 
+Machine: x86_64
+OS: linux-gnu
+Compiler: gcc
+Compilation CFLAGS: "-ggdb3 -O0"
+Machine Type: x86_64-unknown-linux-gnu
+icoutils Version: 0.31.1
+Release Status: release
+Author: Jerzy Kramarz
 
 A buffer overflow was observed in "extract_icons" function in "extract.c" source file. 
 This issue can be triggered by processing a corrupted ico file and will result in icotool crash.
