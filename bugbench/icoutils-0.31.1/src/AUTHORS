@@ -1,0 +1,35 @@
+Authors
+=======
+
+Frank Richter <frank.richter@gmail.com>
+- Current maintainer
+
+Oskar Liljeblad <oskar@osk.mine.nu>
+- Original author
+
+Contributors
+============
+
+Colin Watson <cjwatson@debian.org>
+ - creating and maintaining the Debian package of icoutils
+ - manual pages
+
+Sean Peirce <seanp71@bellatlantic.net>
+ - created the RPM spec file
+
+Marcin Siennicki
+ - BMP extraction support for wrestool
+
+Joel Holdsworth<joel@airwebreathe.org.uk>
+Martin Gieseking
+Martin Storsjö<martin@martin.st>
+Mathew Eis <mathew.eis@gmail.com>
+Sebastián Puebla <spuebla@hotmail.com>
+ - Miscellaneous fixes and improvements
+
+Mats Erik Andersson <gnu@gisladisker.se>
+ - Solaris build fixes
+
+Markus Schölzel <m-schoelzel@web.de>
+Richard W.M. Jones <rjones@redhat.com>
+ - man page improvements
