@@ -1,0 +1,86 @@
+riley@utsasrg2:~/OurBugbenchs/bugbench/icoutils-0.31.1/functions/extract_icons/input$ valgrind /home/riley/OurBugbenchs/bugbench/icoutils-0.31.1/src/icotool/icotool -l PoC.ico
+==24711== Memcheck, a memory error detector
+==24711== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==24711== Using Valgrind-3.10.1 and LibVEX; rerun with -h for copyright info
+==24711== Command: /home/riley/OurBugbenchs/bugbench/icoutils-0.31.1/src/icotool/icotool -l PoC.ico
+==24711==
+PoC.ico: y_pels_per_meter field in bitmap should be zero
+PoC.ico: skipping 64 bytes of extended bitmap header
+PoC.ico: incorrect total size of bitmap (296 specified; 360 real)
+==24711== Invalid read of size 1
+==24711==    at 0x403A0A: simple_vec (extract.c:425)
+==24711==    by 0x404424: extract_icons (extract.c:313)
+==24711==    by 0x402580: main (main.c:323)
+==24711==  Address 0x5951d00 is 0 bytes after a block of size 128 alloc'd
+==24711==    at 0x4C2BBA0: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24711==    by 0x409648: xmalloc (xmalloc.c:41)
+==24711==    by 0x4040FA: extract_icons (extract.c:250)
+==24711==    by 0x402580: main (main.c:323)
+==24711==
+==24711== Invalid write of size 1
+==24711==    at 0x4043BC: extract_icons (extract.c:320)
+==24711==    by 0x402580: main (main.c:323)
+==24711==  Address 0x5951e00 is 0 bytes after a block of size 64 alloc'd
+==24711==    at 0x4C2BBA0: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24711==    by 0x409648: xmalloc (xmalloc.c:41)
+==24711==    by 0x404742: extract_icons (extract.c:304)
+==24711==    by 0x402580: main (main.c:323)
+==24711==
+==24711== Invalid write of size 1
+==24711==    at 0x4043CB: extract_icons (extract.c:321)
+==24711==    by 0x402580: main (main.c:323)
+==24711==  Address 0x5951e01 is 1 bytes after a block of size 64 alloc'd
+==24711==    at 0x4C2BBA0: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24711==    by 0x409648: xmalloc (xmalloc.c:41)
+==24711==    by 0x404742: extract_icons (extract.c:304)
+==24711==    by 0x402580: main (main.c:323)
+==24711==
+==24711== Invalid write of size 1
+==24711==    at 0x4043D3: extract_icons (extract.c:322)
+==24711==    by 0x402580: main (main.c:323)
+==24711==  Address 0x5951e02 is 2 bytes after a block of size 64 alloc'd
+==24711==    at 0x4C2BBA0: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24711==    by 0x409648: xmalloc (xmalloc.c:41)
+==24711==    by 0x404742: extract_icons (extract.c:304)
+==24711==    by 0x402580: main (main.c:323)
+==24711==
+==24711== Invalid write of size 1
+==24711==    at 0x404408: extract_icons (extract.c:331)
+==24711==    by 0x402580: main (main.c:323)
+==24711==  Address 0x5951e03 is 3 bytes after a block of size 64 alloc'd
+==24711==    at 0x4C2BBA0: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24711==    by 0x409648: xmalloc (xmalloc.c:41)
+==24711==    by 0x404742: extract_icons (extract.c:304)
+==24711==    by 0x402580: main (main.c:323)
+==24711==
+==24711== Invalid read of size 1
+==24711==    at 0x4039C9: simple_vec (extract.c:421)
+==24711==    by 0x4043F3: extract_icons (extract.c:331)
+==24711==    by 0x402580: main (main.c:323)
+==24711==  Address 0x5951d80 is 0 bytes after a block of size 64 alloc'd
+==24711==    at 0x4C2BBA0: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24711==    by 0x409648: xmalloc (xmalloc.c:41)
+==24711==    by 0x404129: extract_icons (extract.c:254)
+==24711==    by 0x402580: main (main.c:323)
+==24711==
+==24711==
+==24711== Process terminating with default action of signal 11 (SIGSEGV)
+==24711==  Bad permissions for mapped region at address 0x5D4B000
+==24711==    at 0x4043BC: extract_icons (extract.c:320)
+==24711==    by 0x402580: main (main.c:323)
+==24711==
+==24711== HEAP SUMMARY:
+==24711==     in use at exit: 960 bytes in 8 blocks
+==24711==   total heap usage: 157 allocs, 149 frees, 17,044 bytes allocated
+==24711==
+==24711== LEAK SUMMARY:
+==24711==    definitely lost: 64 bytes in 1 blocks
+==24711==    indirectly lost: 0 bytes in 0 blocks
+==24711==      possibly lost: 0 bytes in 0 blocks
+==24711==    still reachable: 896 bytes in 7 blocks
+==24711==         suppressed: 0 bytes in 0 blocks
+==24711== Rerun with --leak-check=full to see details of leaked memory
+==24711==
+==24711== For counts of detected and suppressed errors, rerun with: -v
+==24711== ERROR SUMMARY: 6248433 errors from 6 contexts (suppressed: 0 from 0)
+Segmentation fault (core dumped)
