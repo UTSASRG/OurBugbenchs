@@ -1,0 +1,15 @@
+Machine: x86_64
+OS: linux-gnu
+Compiler: gcc
+Compilation CFLAGS: "-ggdb3 -O0"
+Machine Type: x86_64-unknown-linux-gnu
+icoutils Version: 0.31.1
+Release Status: release
+Author: Jerzy Kramarz
+
+
+Description:
+
+A buffer overflow was observed in "decode_ne_resource_id" function in "restable.c" source file. 
+This is happening because "len" parameter for memcpy operation is not checked for size and thus becomes negative integer in the process, 
+resulting in failed memcpy operation. This issue can be triggered by processing a corrupted exe file and will result in wrestool crash. 
