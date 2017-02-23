@@ -20,3 +20,7 @@ Author: Jerzy Kramarz
 
 A buffer overflow was observed in "extract_icons" function in "extract.c" source file. 
 This issue can be triggered by processing a corrupted ico file and will result in icotool crash.
+
+
+An out-of-bound read leading to buffer overflow was observed in "simple_vec" function in "extract.c" source file. 
+This issue can be triggered by processing a corrupted ico file and will result in icotool crash. 
