@@ -1,2 +1,5 @@
-base64 -d data.PoC > PoC.exe
+Here are the commands I ran on utsasrg2 to replicate the bug as closely as I could to 
+the sample output. The sample data with valgrind output is in the output folder for comparison.
+
+ase64 -d data.PoC > PoC.exe
 valgrind /home/riley/OurBugbenchs/bugbench/icoutils-0.31.1/src/wrestool/wrestool -l PoC.exe
