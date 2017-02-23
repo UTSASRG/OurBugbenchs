@@ -1,2 +1,2 @@
-base64 -d PoC.exe.b64 > PoC.exe
+base64 -d data.PoC > PoC.exe
 valgrind /home/ico-target/icoutils-0.31.1/wrestool/wrestool -l PoC.exe
