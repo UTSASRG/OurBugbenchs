@@ -1,0 +1,26 @@
+How to replicate buffer overflow with vim-8.0.0322 and BELOW (patch 323+ fixes issue)
+
+(1) Install vim from https://github.com/vim/vim
+(2) Run git checkout 8cc2a9c062fa38e133a62778518f769a423a2526 to get version 8.0.0321 (version right before patch)
+(4) Nav into src folder. Run ./configure --prefix=/BUILD_DIR/
+(5) Run make
+(6) Run make install
+(7) Check to make sure you have the right version of vim by executing vim in the vim build
+    directory.
+
+PATCHED COMMANDS SHOULD BE
+echo $'VIMspell\x32\x0F\xFF\xFF\xFF\xFF' > ~/.../vim/runtime/spell/en.utf-8.spl
+~/.../vim-build-patch/bin/vim -u NONE -i NONE -N --cmd 'set encoding=utf-8 spelllang=en spell' --cmd cq
+
+OUTPUT SHOULD BE
+Error detected while processing /home/riley/OurBugbenchs/bugbench/vim-8.0/vim-build/share/vim/vim80/spell/en.utf-8.spl:
+E758: Truncated spell file
+
+
+UNPATCHED COMMANDS SHOULD BE
+echo $'VIMspell\x32\x0F\xFF\xFF\xFF\xFF' > ~/.../vim/runtime/spell/en.utf-8.spl
+~/.../vim-build-broken/bin/vim -u NONE -i NONE -N --cmd 'set encoding=utf-8 spelllang=en spell' --cmd cq
+
+OUTPUT SHOULD BE
+Warning: Cannot find word list "en.utf-8.spl" or "en.ascii.spl"
+<or, alternate/siilar output. As long as you don't get error E758 you have replicated the bug>
