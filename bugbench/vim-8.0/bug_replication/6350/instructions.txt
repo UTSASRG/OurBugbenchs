@@ -1,1 +1,9 @@
-Instructions
+How to replicate buffer overflow with vim-8.0.0377 and BELOW (patch 378+ fixes issue)
+
+(1) Install vim from https://github.com/vim/vim
+(2) Run git checkout 3eb1637b1bba19519885dd6d377bd5596e91d22c to get version 8.0.0321 (version right before patch)
+(4) Nav into src folder. Run ./configure --prefix=/BUILD_DIR/
+(5) Run make
+(6) Run make install
+(7) Check to make sure you have the right version of vim by executing vim in the vim build
+    directory.
