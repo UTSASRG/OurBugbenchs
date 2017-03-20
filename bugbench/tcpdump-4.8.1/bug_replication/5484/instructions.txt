@@ -1,0 +1,2 @@
+Steps to replicate this bug:
+(1) Download tcpdump version 4.8.1 from https://github.com/the-tcpdump-group/tcpdump/releases/tag/tcpdump-4.8.1
