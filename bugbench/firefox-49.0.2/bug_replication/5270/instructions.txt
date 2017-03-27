@@ -1,0 +1,9 @@
+The problem here arises when there's a character (like ß or ᾁ) that expands to multiple characters during uppercasing, and 
+then we encounter a potential Irish grammatical prefix whose position (in the output string) we mark for possible further 
+processing. This position will not be correct for the input string due to the earlier character expansion, leading to the 
+out-of-bounds write if we then try to mark the input hyphen as a deleted character. The simple fix is to record both 
+source and destination offsets, rather than using a single position as if it were valid for both.
+
+STEPS TO REPLICATE:
+(1) Install firefox 49.0.2 (instructions in src folder)
+(2)
