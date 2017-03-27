@@ -6,4 +6,44 @@ source and destination offsets, rather than using a single position as if it wer
 
 STEPS TO REPLICATE:
 (1) Install firefox 49.0.2 (instructions in src folder)
-(2)
+(2) 
+
+
+
+ASAN-Trace output should look something like this:
+
+==8332==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x61d0002dd080 at pc 0x7f09051bc66b bp 0x7ffd0d8d03f0 sp 0x7ffd0d8d03e8
+WRITE of size 1 at 0x61d0002dd080 thread T0 (Web Content)
+    #0 0x7f09051bc66a in nsCaseTransformTextRunFactory::TransformString(nsAString_internal const&, nsString&, bool, nsIAtom const*, nsTArray<bool>&, nsTArray<bool>&, nsTransformedTextRun*, nsTArray<unsigned char>*, nsTArray<RefPtr<nsTransformedCharStyle> >*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextRunTransformations.cpp:484:47
+    #1 0x7f09051bd328 in nsCaseTransformTextRunFactory::RebuildTextRun(nsTransformedTextRun*, mozilla::gfx::DrawTarget*, gfxMissingFontRecorder*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextRunTransformations.cpp:619:22
+    #2 0x7f0905165491 in FinishSettingProperties /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextRunTransformations.h:150:7
+    #3 0x7f0905165491 in BuildTextRunsScanner::BreakSink::Finish(gfxMissingFontRecorder*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:955
+    #4 0x7f0905164f05 in BuildTextRunsScanner::FlushLineBreaks(gfxTextRun*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:1483:5
+    #5 0x7f090515bf9f in BuildTextRunsScanner::FlushFrames(bool, bool) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:1462:5
+    #6 0x7f090516e629 in BuildTextRuns /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:1386:3
+    #7 0x7f090516e629 in nsTextFrame::EnsureTextRun(nsTextFrame::TextRunType, mozilla::gfx::DrawTarget*, nsIFrame*, nsLineList_iterator const*, unsigned int*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:2668
+    #8 0x7f09051ae576 in nsTextFrame::ReflowText(nsLineLayout&, int, mozilla::gfx::DrawTarget*, mozilla::ReflowOutput&, unsigned int&) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:8879:5
+    #9 0x7f0904edd7cd in nsLineLayout::ReflowFrame(nsIFrame*, unsigned int&, mozilla::ReflowOutput*, bool&) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsLineLayout.cpp:945:5
+    #10 0x7f0904f799f5 in nsBlockFrame::ReflowInlineFrame(mozilla::BlockReflowInput&, nsLineLayout&, nsLineList_iterator, nsIFrame*, LineReflowStatus*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsBlockFrame.cpp:4089:3
+    #11 0x7f0904f78711 in nsBlockFrame::DoReflowInlineFrames(mozilla::BlockReflowInput&, nsLineLayout&, nsLineList_iterator, nsFlowAreaRect&, int&, nsFloatManager::SavedState*, bool*, LineReflowStatus*, bool) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsBlockFrame.cpp:3891:5
+.
+.
+.
+0x61d0002dd080 is located 0 bytes to the right of 2048-byte region [0x61d0002dc880,0x61d0002dd080)
+allocated by thread T0 (Web Content) here:
+    #0 0x4b27ce in realloc /builds/slave/moz-toolchain/src/llvm/projects/compiler-rt/lib/asan/asan_malloc_linux.cc:71:3
+    #1 0x4e0d7d in moz_xrealloc /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/memory/mozalloc/mozalloc.cpp:105:20
+    #2 0x7f08fdaf2751 in Realloc /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/obj-firefox/dist/include/nsTArray.h:182:12
+    #3 0x7f08fdaf2751 in nsTArrayInfallibleAllocator::ResultTypeProxy nsTArray_base<nsTArrayInfallibleAllocator, nsTArray_CopyWithMemutils>::EnsureCapacity<nsTArrayInfallibleAllocator>(unsigned long, unsigned long) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/obj-firefox/dist/include/nsTArray-inl.h:183
+    #4 0x7f09051babca in AppendElement<bool, nsTArrayInfallibleAllocator> /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/obj-firefox/dist/include/nsTArray.h:2027:32
+    #5 0x7f09051babca in nsCaseTransformTextRunFactory::TransformString(nsAString_internal const&, nsString&, bool, nsIAtom const*, nsTArray<bool>&, nsTArray<bool>&, nsTransformedTextRun*, nsTArray<unsigned char>*, nsTArray<RefPtr<nsTransformedCharStyle> >*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextRunTransformations.cpp:570
+    #6 0x7f09051bd328 in nsCaseTransformTextRunFactory::RebuildTextRun(nsTransformedTextRun*, mozilla::gfx::DrawTarget*, gfxMissingFontRecorder*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextRunTransformations.cpp:619:22
+    #7 0x7f0905165491 in FinishSettingProperties /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextRunTransformations.h:150:7
+    #8 0x7f0905165491 in BuildTextRunsScanner::BreakSink::Finish(gfxMissingFontRecorder*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:955
+    #9 0x7f0905164f05 in BuildTextRunsScanner::FlushLineBreaks(gfxTextRun*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:1483:5
+    #10 0x7f090515bf9f in BuildTextRunsScanner::FlushFrames(bool, bool) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:1462:5
+    #11 0x7f090516e629 in BuildTextRuns /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:1386:3
+    #12 0x7f090516e629 in nsTextFrame::EnsureTextRun(nsTextFrame::TextRunType, mozilla::gfx::DrawTarget*, nsIFrame*, nsLineList_iterator const*, unsigned int*) /builds/slave/m-cen-l64-asan-ntly-0000000000/build/src/layout/generic/nsTextFrame.cpp:2668
+.
+.
+.

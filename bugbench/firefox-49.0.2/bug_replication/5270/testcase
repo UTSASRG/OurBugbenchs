@@ -1,0 +1,30 @@
+This is a reduced version of the original testcase, to be used as a simple crashtest; it fails with 'Assertion failure: aIndex < Length() (invalid array index)' on current trunk, and loads fine after the patch. (To be landed once the bug is opened.)
+
+# HG changeset patch
+# User Jonathan Kew <jkew@mozilla.com>
+# Date 1470821843 -3600
+#      Wed Aug 10 10:37:23 2016 +0100
+# Node ID 664e4e264a46153d37855a068b27260d94ea4712
+# Parent  720b5d2c84d5b253d4dfde4897e13384dc97a46a
+Bug 1291016 - Minimized testcase as a crashtest.
+
+diff --git a/layout/base/crashtests/1291016-1.html b/layout/base/crashtests/1291016-1.html
+new file mode 100644
+--- /dev/null
++++ b/layout/base/crashtests/1291016-1.html
+@@ -0,0 +1,2 @@
++<div lang="ga-IE" style="text-transform: uppercase;">
++&#xdf; n-a
+diff --git a/layout/base/crashtests/crashtests.list b/layout/base/crashtests/crashtests.list
+--- a/layout/base/crashtests/crashtests.list
++++ b/layout/base/crashtests/crashtests.list
+@@ -471,8 +471,9 @@ pref(layout.css.grid.enabled,true) load 
+ load 1162813.xul
+ load 1163583.html
+ load 1234622-1.html
+ load 1235467-1.html
+ pref(dom.webcomponents.enabled,true) load 1261351.html
+ load 1270797-1.html
+ load 1278455-1.html
+ load 1286889.html
++load 1291016-1.html
