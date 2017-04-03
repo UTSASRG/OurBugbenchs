@@ -6,7 +6,12 @@ source and destination offsets, rather than using a single position as if it wer
 
 STEPS TO REPLICATE:
 (1) Install firefox 49.0.2 (instructions in src folder)
-(2) 
+(2) Install xvfb with sudo apt-get install xvfb
+(3) Run Xvfb :1 -screen 0 1280x1024x24 1>/dev/null 2>/dev/null & export DISPLAY=:1
+(4) To see that it is working correctly, you can start for example an HTTP server from a 
+    separate SSH connection and try to set firefox to connect that HTTP server.
+(5) Get the address sanitizer version of firefox 49 from https://developer.mozilla.org/en-US/docs/Mozilla/Testing/Firefox_and_Address_Sanitizer
+(6) Run Firefox with ASAN and the html file included in this directory and check results with below output.
 
 
 
