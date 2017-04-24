@@ -1,0 +1,6 @@
+STEPS FOR REPLICATION
+
+1. Download package from github (version 1.0.13) 
+	Link: https://github.com/fujita/tgt/releases/tag/v1.0.13
+2. Untar and install
+3. 
