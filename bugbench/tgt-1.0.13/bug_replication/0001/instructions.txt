@@ -58,7 +58,7 @@ The following example shows how to create a file /etc/XXX
 
 # echo "my_commands" > /tmp/xxx/samples/current
 
-(3) Set the oprofile session directory to the root of the 'samples' 
+(3) Set the tgt session directory to the root of the 'samples' 
 directory
 
 # sudo tgtd --session-dir=/tmp/xxx
