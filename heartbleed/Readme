@@ -1,0 +1,41 @@
+
+### install openssl ###
+cd /home/hongyuliu/workspace/OurBugbenchs/heartbleed/openssl-OpenSSL_1_0_1f
+
+./config -DOPENSSL_NO_BUF_FREELISTS --prefix=/home/hongyuliu/workspace/OurBugbenchs/heartbleed/openssl-101f
+
+make
+
+make install_sw
+
+### create certificates ###
+openssl genrsa -out privkey.pem 2048
+openssl req -new -x509 -key privkey.pem -out cacert.pem -days 1095
+
+or:
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./nginx.key -out ./nginx.crt
+
+or :
+
+openssl genrsa -out example.key 2048
+openssl req -new -key example.key -out example.csr
+openssl x509 -req -days 365 -in example.csr -signkey example.key -out example.crt
+
+### install nginx ###
+cd /home/hongyuliu/workspace/OurBugbenchs/heartbleed/nginx-1.3.9
+
+nginx would compile openssl again, add flag DOPENSSL_NO_BUF_FREELISTS to config:
+auto/lib/openssl/make:59:	&& ./config -DOPENSSL_NO_BUF_FREELISTS --prefix=$ngx_prefix no-shared $OPENSSL_OPT \\
+
+add our library to the following lines:
+auto/unix:798:        CORE_LIBS="$CORE_LIBS -rdynamic /home/hongyuliu/workspace/Watcher/source/libwatcher.so -lpthread"
+The line below is automatically created:
+objs/Makefile:348:  -ldl -rdynamic /home/hongyuliu/workspace/Watcher/source/libwatcher.so -lpthread -lcrypt -lpcre /home/hongyuliu/workspace/OurBugbenchs/heartbleed/openssl-OpenSSL_1_0_1f/.openssl/lib/libssl.a /home/hongyuliu/workspace/OurBugbenchs/heartbleed/openssl-OpenSSL_1_0_1f/.openssl/lib/libcrypto.a -ldl -lz \
+
+./configure --prefix=/home/hongyuliu/workspace/OurBugbenchs/heartbleed/nginx --with-http_ssl_module --with-openssl=/home/hongyuliu/workspace/OurBugbenchs/heartbleed/openssl-OpenSSL_1_0_1f
+
+make
+
+make install
+
