@@ -1,0 +1,37 @@
+* openjpeg (git commit 3991bbe59537e26b132be1c6af16112283bf1ace)
+program description:
+---------------------
+openjpeg is a library for working with JPEG image files. It includes several
+utilities, one of which is j2k_to_image. This program converts JPEG 2000
+images to other formats, including PPM.
+
+j2k_to_image -i image.j2k -o image.pgm
+
+
+bug explanation:
+--------------------
+Heap buffer overflow (CVE-2012-3535)
+
+memcpy(l_cblk->data + l_cblk->len, l_current_data, l_seg->newlen);
+
+At t2.c:1829 (t2_read_packet_data), a memcpy call is used to copy source data
+to a heap-allocated buffer. A specially crafted input file can cause the sum
+of the two lengths to be greater than the allocated buffer size, causing an
+overflow. The function will return with an error, and the resulting memory
+deallocation will cause a segfault.
+
+
+bug triggering input:
+---------------------
+j2k_to_image -i inputs/test2.j2k -o test2.ppm
+
+This will segfault when trying to free a heap buffer which has been corrupted
+by an overflow.
+
+correct inputs:
+--------------------
+inputs/tst2.j2k will fail to decode, but it will not segfault.
+
+bug detection preliminary results:
+--------------------
+Unknown/not tested
