@@ -4,7 +4,7 @@ NOTE:
 
 App: MySQL-5.7.9
 Bug ID: 79402(UAF) 78995(UAF) 78965(HO) 79648(HO)
-Status: Reproducing
+Status: Reproducing, can't reproduced
 
 App: OpenLDAP-2.4.44
 Bug ID: 8385(UAF)
